@@ -228,7 +228,7 @@ echo $(tput setaf 7)"###########################################################
 echo $(tput setaf 7)"Testing DNS servers..."$(tput sgr 0)
 for i in $(cat /etc/resolv.conf | grep ^nameserver | awk '{print $2}')
 do
-        if dig @"$i" iaai.com > /dev/null
+        if dig @"$i" google.com > /dev/null
         then
                 echo $(tput setaf 2)"OK: DNS server $i is ok"$(tput sgr 0)
         else
