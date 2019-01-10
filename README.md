@@ -10,4 +10,5 @@ curl -s https://raw.githubusercontent.com/mattmattox/doctor_tux/master/doctor_tu
 
 ## Supported Operating Systems
 + CentOS 7.6.1810
++ Ubuntu 16.04.5 LTS
 + Ubuntu 18.04.1 LTS
