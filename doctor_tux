@@ -254,15 +254,19 @@ echo $(tput setaf 2)"###########################################################
 echo $(tput setaf 7)"Checking kernel..."$(tput sgr 0)
 if [[ -f /boot/grub/grub.conf ]]
 then
-	bootkernel="$(cat /boot/grub/grub.conf | grep 'title' | awk '{print $3}' | tr -d '()' | head -n1)"
+        bootkernel="$(cat /boot/grub/grub.conf | grep 'title' | awk '{print $3}' | tr -d '()' | head -n1)"
 fi
 if [[ -f /boot/grub/grub.cfg ]]
 then
-	bootkernel="$(cat /boot/grub/grub.cfg | grep 'Ubuntu, with Linux' | awk '{print $5}' | tr -d "'" | head -n1)"
+        bootkernel="$(cat /boot/grub/grub.cfg | grep 'Ubuntu, with Linux' | awk '{print $5}' | tr -d "'" | head -n1)"
 fi
 if [[ -f /boot/grub2/grub.conf ]]
 then
-	bootkernel="$(cat /boot/grub2/grub.cfg | grep 'CentOS Linux' | awk '{print $4}' | head -n1 | tr -d '()')"
+        bootkernel="$(cat /boot/grub2/grub.conf | grep 'CentOS Linux' | awk '{print $4}' | head -n1 | tr -d '()')"
+fi
+if [[ -f /boot/grub2/grub.cfg ]]
+then
+        bootkernel="$(cat /boot/grub2/grub.cfg | grep 'CentOS Linux' | awk '{print $4}' | head -n1 | tr -d '()')"
 fi
 currentkernel="$(uname -r)"
 echo $(tput setaf 7)"Boot Kernel: $bootkernel"$(tput sgr 0)
