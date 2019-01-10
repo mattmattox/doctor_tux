@@ -17,7 +17,7 @@ fi
 if cat /etc/*-release | grep -i Ubuntu > /dev/null 2>&1
 then
 	os='Ubuntu'
-	apt install bc sysstat dig -y > /dev/null 2>&1
+	apt install -y bc sysstat dnsutils > /dev/null 2>&1
 fi
 if cat /etc/*-release | grep -i CentOS > /dev/null 2>&1
 then
