@@ -2,11 +2,20 @@
 
 if [[ ! "$(whoami)" == "root" ]]
 then
-        echo "You must be root to run this script"
-        exit 1
+	echo "You must be root to run this script"
+	exit 1
 fi
 
-yum install -y bc > /dev/null
+if cat /etc/*-release | grep -i Ubuntu > /dev/null
+then
+	os='Ubuntu'
+	apt install bc sysstat -y
+fi
+if cat /etc/*-release | grep -i CentOS > /dev/null
+then
+        os='CentOS'
+	yum install -y bc > /dev/null
+fi
 
 echo ""
 echo $(tput setaf 2)"##################################################################"$(tput sgr 0)
@@ -20,13 +29,13 @@ cpunice="$(top -bn1 | grep "Cpu(s)" | awk '{print $4}' | awk -F "." '{print $1}'
 cpusys="$(top -bn1 | grep "Cpu(s)" | awk '{print $6}' | awk -F "." '{print $1}')"
 cpuidle="$(top -bn1 | grep "Cpu(s)" | awk '{print $8}' | awk -F "." '{print $1}')"
 cpuwait="$(top -bn1 | grep "Cpu(s)" | awk '{print $10}' | awk -F "." '{print $1}')"
-#echo $(tput setaf 2)":Current CPU usage:"$(tput sgr 0)
-#echo $(tput setaf 2)"Normal processes executing in user mode:" $cpuuser $(tput sgr 0)
-#echo $(tput setaf 2)"Niced processes executing in user mode:" $cpunice $(tput sgr 0)
-#echo $(tput setaf 2)"Processes executing in kernel mode:" $cpusys $(tput sgr 0)
-#echo $(tput setaf 2)"Idle:" $cpuidle $(tput sgr 0)
-#echo $(tput setaf 2)"Waiting for I/O to complete:" $cpuwait $(tput sgr 0)
-#echo $(tput setaf 4)":CPU Health Report:" $(tput sgr 0)
+echo $(tput setaf 2)":Current CPU usage:"$(tput sgr 0)
+echo $(tput setaf 2)"Normal processes executing in user mode:" $cpuuser $(tput sgr 0)
+echo $(tput setaf 2)"Niced processes executing in user mode:" $cpunice $(tput sgr 0)
+echo $(tput setaf 2)"Processes executing in kernel mode:" $cpusys $(tput sgr 0)
+echo $(tput setaf 2)"Idle:" $cpuidle $(tput sgr 0)
+echo $(tput setaf 2)"Waiting for I/O to complete:" $cpuwait $(tput sgr 0)
+echo $(tput setaf 4)":CPU Health Report:" $(tput sgr 0)
 if [[ $cpuuser -ge 75 ]]
 then
         echo $(tput setaf 1)"CRITICAL: Detected High CPU user time, this mean the CPU is being used up by an Application. Work with App team to verify this is normal"$(tput sgr 0)
@@ -94,21 +103,21 @@ swapused="$(free -m | grep ^Swap: | awk '{print $3}')"
 swapfree="$(free -m | grep ^Swap: | awk '{print $4}')"
 swapusedpert="$(echo "scale=2; $swapused / $swaptotal * 100" | bc | awk -F "." '{print $1}')"
 swapfreepert="$(echo "scale=2; $swapfree / $swaptotal * 100" | bc | awk -F "." '{print $1}')"
-#echo $(tput setaf 2)":Current MEM usage:"$(tput sgr 0)
-#echo $(tput setaf 2)"Total Memory:" $memtotal $(tput sgr 0)
-#echo $(tput setaf 2)"Used Memory:" $memused $(tput sgr 0)
-#echo $(tput setaf 2)"Free Memory:" $memfree $(tput sgr 0)
-#echo $(tput setaf 2)"Shared Memory:" $memshared $(tput sgr 0)
-#echo $(tput setaf 2)"Buff/Cache Memory:" $membuff $(tput sgr 0)
-#echo $(tput setaf 2)"Available Memory:" $memavail $(tput sgr 0)
-#echo $(tput setaf 2)"Used Memory %:" $memusedpert $(tput sgr 0)
-#echo $(tput setaf 2)"Available Memory %:" $memavailpert $(tput sgr 0)
-#echo $(tput setaf 2)"SWAP Total:" $swaptotal $(tput sgr 0)
-#echo $(tput setaf 2)"SWAP Used:" $swapused $(tput sgr 0)
-#echo $(tput setaf 2)"SWAP Free:" $swapfree $(tput sgr 0)
-#echo $(tput setaf 2)"SWAP Used %:" $swapusedpert $(tput sgr 0)
-#echo $(tput setaf 2)"SWAP Free %:" $swapfreepert $(tput sgr 0)
-#echo $(tput setaf 4)":MEM Health Report:" $(tput sgr 0)
+echo $(tput setaf 2)":Current MEM usage:"$(tput sgr 0)
+echo $(tput setaf 2)"Total Memory:" $memtotal $(tput sgr 0)
+echo $(tput setaf 2)"Used Memory:" $memused $(tput sgr 0)
+echo $(tput setaf 2)"Free Memory:" $memfree $(tput sgr 0)
+echo $(tput setaf 2)"Shared Memory:" $memshared $(tput sgr 0)
+echo $(tput setaf 2)"Buff/Cache Memory:" $membuff $(tput sgr 0)
+echo $(tput setaf 2)"Available Memory:" $memavail $(tput sgr 0)
+echo $(tput setaf 2)"Used Memory %:" $memusedpert $(tput sgr 0)
+echo $(tput setaf 2)"Available Memory %:" $memavailpert $(tput sgr 0)
+echo $(tput setaf 2)"SWAP Total:" $swaptotal $(tput sgr 0)
+echo $(tput setaf 2)"SWAP Used:" $swapused $(tput sgr 0)
+echo $(tput setaf 2)"SWAP Free:" $swapfree $(tput sgr 0)
+echo $(tput setaf 2)"SWAP Used %:" $swapusedpert $(tput sgr 0)
+echo $(tput setaf 2)"SWAP Free %:" $swapfreepert $(tput sgr 0)
+echo $(tput setaf 4)":MEM Health Report:" $(tput sgr 0)
 
 if [[ $memavailpert -le 20 ]]
 then
@@ -147,7 +156,7 @@ fi
 
 echo $(tput setaf 7)"#################################################################"$(tput sgr 0)
 echo $(tput setaf 7)"Checking FileSystems Free Space..."$(tput sgr 0)
-for i in $(df | awk '{print $6}' | tail -n+2)
+for i in $(df | awk '{print $6}' | grep -v '/snap/' | tail -n+2)
 do
         filesystemtotal="$(df -m $i | awk '{print $2}' | tail -n1 | tr -d '%')"
         filesystemused="$(df -m $i | awk '{print $3}' | tail -n1 | tr -d '%')"
@@ -170,15 +179,15 @@ done
 
 echo $(tput setaf 7)"#################################################################"$(tput sgr 0)
 echo $(tput setaf 7)"Checking FileSystems for ReadOnly..."$(tput sgr 0)
-for i in $(df | grep -v '/sys/' | awk '{print $6}' | tail -n+2)
+for i in $(df | grep -v '/sys/' | grep -v '/snap/' | awk '{print $6}' | tail -n+2)
 do
-        rootfs="$(df -i | awk '{print $6}' | tail -n1)"
-        if [[ "$i" == "/" ]]
-        then
-                filesystemrw="$(cat /etc/mtab | grep rootfs | awk '{print $4}' | awk -F ',' '{print $1}')"
-        else
-                filesystemrw="$(cat /etc/mtab | grep $i' ' | awk '{print $4}' | awk -F ',' '{print $1}')"
-        fi
+	rootfs="$(df -i | awk '{print $6}' | tail -n1)"
+	if [[ "$i" == "/" ]]  && [[ "$os" == "CentOS" ]]
+	then
+		filesystemrw="$(cat /etc/mtab | grep rootfs | awk '{print $4}' | awk -F ',' '{print $1}')"
+	else
+	        filesystemrw="$(cat /etc/mtab | grep $i' ' | awk '{print $4}' | awk -F ',' '{print $1}')"
+	fi
         if [[ ! $filesystemrw == 'rw' ]]
         then
                 echo $(tput setaf 1)"CRITICAL: Detected ReadOnly FileSystem on $i"$(tput sgr 0)
@@ -228,7 +237,7 @@ echo $(tput setaf 7)"###########################################################
 echo $(tput setaf 7)"Testing DNS servers..."$(tput sgr 0)
 for i in $(cat /etc/resolv.conf | grep ^nameserver | awk '{print $2}')
 do
-        if dig @"$i" google.com > /dev/null
+        if dig @"$i" iaai.com > /dev/null
         then
                 echo $(tput setaf 2)"OK: DNS server $i is ok"$(tput sgr 0)
         else
@@ -236,46 +245,28 @@ do
         fi
 done
 
-echo $(tput setaf 7)"#################################################################"$(tput sgr 0)
-echo $(tput setaf 7)"Checking Services..."$(tput sgr 0)
-serviceproblem=0
-for service in $(systemctl list-unit-files | grep enabled | awk '{print $1}' | grep -v 'NetworkManager' | grep -v 'systemd-readahead' | grep -v 'getty' | grep -v 'autovt' | grep -v 'bluetooth' | grep -v 'dbus-org' | grep -v 'liupdaterd' | grep -v 'mdmonitor' | grep -v 'microcode' | grep -v 'spice-vdagentd' | grep -v 'nfs.service')
-do
-        if ! systemctl is-active $service > /dev/null
-        then
-                echo $(tput setaf 1)"Service: $service" $(tput sgr 0)
-                systemctl status $service
-                serviceproblem=1
-        fi
-done
-if [[ "$serviceproblem" == "0" ]]
-then
-        echo $(tput setaf 2)"OK: All Services are running"$(tput sgr 0)
-fi
-echo $(tput setaf 7)"#################################################################"$(tput sgr 0)
-echo $(tput setaf 7)"Checking Mongod..."$(tput sgr 0)
-if [[ -f /etc/mongod.conf ]]
-then
-        if ps aux | grep -v grep | grep mongod > /dev/null
-        then
-                echo $(tput setaf 2)"OK: Mongod is running"$(tput sgr 0)
-        else
-                echo $(tput setaf 1)"CRITICAL: Mongod is not running"$(tput sgr 0)
-        fi
-fi
-echo $(tput setaf 7)"Checking Redis..."$(tput sgr 0)
-if [[ -f /etc/redis.conf ]]
-then
-        if [[ ! "$(systemctl status redis | grep 'Active: active (running)')" ]]
-        then
-                systemctl restart redis
-        fi
-        if ps aux | grep -v grep | grep redis > /dev/null
-        then
-                echo $(tput setaf 2)"OK: Redis is running"$(tput sgr 0)
-        else
-                echo $(tput setaf 1)"CRITICAL: Redis is not running"$(tput sgr 0)
-        fi
-fi
-
 echo $(tput setaf 2)"##################################################################"$(tput sgr 0)
+echo $(tput setaf 7)"Checking kernel..."$(tput sgr 0)
+if [[ -f /boot/grub/grub.conf ]]
+then
+	bootkernel="$(cat /boot/grub/grub.conf | grep 'title' | awk '{print $3}' | tr -d '()' | head -n1)"
+fi
+if [[ -f /boot/grub/grub.cfg ]]
+then
+	bootkernel="$(cat /boot/grub/grub.cfg | grep 'Ubuntu, with Linux' | awk '{print $5}' | tr -d "'" | head -n1)"
+fi
+if [[ -f /boot/grub2/grub.conf ]]
+then
+	bootkernel="$(cat /boot/grub2/grub.cfg | grep 'CentOS Linux' | awk '{print $4}' | head -n1 | tr -d '()')"
+fi
+currentkernel="$(uname -r)"
+echo $(tput setaf 7)"Boot Kernel: $bootkernel"$(tput sgr 0)
+echo $(tput setaf 7)"Current Kernel: $currentkernel"$(tput sgr 0)
+if [[ "$bootkernel" == "$currentkernel" ]]
+then
+	echo $(tput setaf 2)"Running on current kernel"$(tput sgr 0)
+else
+	echo $(tput setaf 1)"Running on older kernel then next boot"$(tput sgr 0)
+fi
+echo $(tput setaf 2)"##################################################################"$(tput sgr 0)
+
