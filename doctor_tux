@@ -1,27 +1,32 @@
 #!/bin/bash
-
+echo $(tput setaf 7)'##################################################################'$(tput sgr 0)
+echo $(tput setaf 1)'     ______ _____ _____ _____ ___________   _____ _   ___   __    '$(tput sgr 0)
+echo $(tput setaf 2)'     |  _  \  _  /  __ \_   _|  _  | ___ \ |_   _| | | \ \ / /    '$(tput sgr 0)
+echo $(tput setaf 3)'     | | | | | | | /  \/ | | | | | | |_/ /   | | | | | |\ V /     '$(tput sgr 0)
+echo $(tput setaf 4)'     | | | | | | | |     | | | | | |    /    | | | | | |/   \     '$(tput sgr 0)
+echo $(tput setaf 5)'     | |/ /\ \_/ / \__/\ | | \ \_/ / |\ \    | | | |_| / /^\ \    '$(tput sgr 0)
+echo $(tput setaf 6)'     |___/  \___/ \____/ \_/  \___/\_| \_|   \_/  \___/\/   \/    '$(tput sgr 0)
+echo $(tput setaf 7)'                By Matthew Mattox cube8021@gmail.com              '$(tput sgr 0)
+echo $(tput setaf 7)'##################################################################'$(tput sgr 0)
 if [[ ! "$(whoami)" == "root" ]]
 then
 	echo "You must be root to run this script"
 	exit 1
 fi
 
-if cat /etc/*-release | grep -i Ubuntu > /dev/null
+if cat /etc/*-release | grep -i Ubuntu > /dev/null 2>&1
 then
 	os='Ubuntu'
-	apt install bc sysstat -y
+	apt install bc sysstat -y > /dev/null 2>&1
 fi
-if cat /etc/*-release | grep -i CentOS > /dev/null
+if cat /etc/*-release | grep -i CentOS > /dev/null 2>&1
 then
         os='CentOS'
-	yum install -y bc > /dev/null
+	yum install -y bc > /dev/null 2>&1
 fi
-
-echo ""
 echo $(tput setaf 2)"##################################################################"$(tput sgr 0)
 echo $(tput setaf 2)"::Starting Doctor TUX::"$(tput sgr 0)
 echo $(tput setaf 2)"Start time:" $(date) $(tput sgr 0)
-
 echo $(tput setaf 7)"#################################################################"$(tput sgr 0)
 echo $(tput setaf 7)"Checking CPU usage..."$(tput sgr 0)
 cpuuser="$(top -bn1 | grep "Cpu(s)" | awk '{print $2}' | awk -F "." '{print $1}')"
