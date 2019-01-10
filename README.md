@@ -7,3 +7,6 @@ This script was created to help with troubleshooting issues on Ubuntu / CentOS s
 As root run the following command.
 
 curl -s https://raw.githubusercontent.com/mattmattox/doctor_tux/master/doctor_tux | bash
+
+## Supported Operating Systems
+Ubuntu 18.04.1 LTS

@@ -17,12 +17,12 @@ fi
 if cat /etc/*-release | grep -i Ubuntu > /dev/null 2>&1
 then
 	os='Ubuntu'
-	apt install bc sysstat -y > /dev/null 2>&1
+	apt install bc sysstat dig -y > /dev/null 2>&1
 fi
 if cat /etc/*-release | grep -i CentOS > /dev/null 2>&1
 then
         os='CentOS'
-	yum install -y bc > /dev/null 2>&1
+	yum install -y bc sysstat dig > /dev/null 2>&1
 fi
 echo $(tput setaf 2)"##################################################################"$(tput sgr 0)
 echo $(tput setaf 2)"::Starting Doctor TUX::"$(tput sgr 0)
