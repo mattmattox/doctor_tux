@@ -231,7 +231,7 @@ done
 
 echo $(tput setaf 7)"#################################################################"$(tput sgr 0)
 echo $(tput setaf 7)"Testing Gateway access..."$(tput sgr 0)
-gateway="$(route | awk '{print $2}' | tail -n+3 | grep -v '0.0.0.0')"
+gateway="$(route -n | awk '{print $2}' | tail -n+3 | grep -v '0.0.0.0')"
 if ping -c 1 $gateway > /dev/null
 then
         echo $(tput setaf 2)"OK: Default Gateway is pingable"$(tput sgr 0)
