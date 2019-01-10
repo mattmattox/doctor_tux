@@ -24,9 +24,35 @@ then
         os='CentOS'
 	yum install -y bc sysstat bind-utils > /dev/null 2>&1
 fi
-echo $(tput setaf 2)"##################################################################"$(tput sgr 0)
+echo $(tput setaf 7)"##################################################################"$(tput sgr 0)
 echo $(tput setaf 2)"::Starting Doctor TUX::"$(tput sgr 0)
 echo $(tput setaf 2)"Start time:" $(date) $(tput sgr 0)
+echo $(tput setaf 7)"##################################################################"$(tput sgr 0)
+echo $(tput setaf 2)"::Hardware Info::"$(tput sgr 0)
+shostname="$(hostname -s)"
+fhostname="$(hostname -f)"
+hwsystem="$(lshw -quiet | grep 'product:' | head -n1 | awk -F ': ' '{print $2}')"
+hwserial="$(lshw -quiet | grep 'serial:' | head -n1 | awk -F ': ' '{print $2}')"
+cpuinfo="$(lshw -c CPU -quiet | grep 'product:' | head -n1 | awk -F ': ' '{print $2}' | tr -s " ")"
+corecount="$(cat /proc/cpuinfo | grep ^processor | wc -l)"
+meminfo="$(lshw -c memory -short -quiet | grep 'System Memory' | awk '{print $3}')"
+echo $(tput setaf 2)"Short Hostname: $shostname"$(tput sgr 0)
+echo $(tput setaf 2)"Full Hostname: $fhostname"$(tput sgr 0)
+echo $(tput setaf 2)"Hardware platform: $hwsystem"$(tput sgr 0)
+echo $(tput setaf 2)"Serial Number: $hwserial"$(tput sgr 0)
+echo $(tput setaf 2)"CPU info: $cpuinfo"$(tput sgr 0)
+echo $(tput setaf 2)"Core count: $corecount"$(tput sgr 0)
+echo $(tput setaf 2)"Memory: $meminfo"$(tput sgr 0)
+echo $(tput setaf 7)"#################################################################"$(tput sgr 0)
+echo $(tput setaf 2)"::OS Info::"$(tput sgr 0)
+if [[ "$os" == 'Ubuntu' ]]
+then
+	echo $(tput setaf 2)"$(cat /etc/os-release)"$(tput sgr 0)
+fi
+if [[ "$os" == 'CentOS' ]]
+then
+	echo $(tput setaf 2)"$(cat /etc/centos-release)"$(tput sgr 0)
+fi
 echo $(tput setaf 7)"#################################################################"$(tput sgr 0)
 echo $(tput setaf 7)"Checking CPU usage..."$(tput sgr 0)
 cpuuser="$(top -bn1 | grep "Cpu(s)" | awk '{print $2}' | awk -F "." '{print $1}')"
