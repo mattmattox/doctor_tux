@@ -1,6 +1,6 @@
 # Doctor TUX
 
-This script was created due to help with troubleshooting command issues on Ubuntu / CentOS servers.
+This script was created to help with troubleshooting issues on Ubuntu / CentOS servers.
 
 ## Getting Started
 
