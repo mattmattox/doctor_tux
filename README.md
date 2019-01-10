@@ -9,4 +9,5 @@ As root run the following command.
 curl -s https://raw.githubusercontent.com/mattmattox/doctor_tux/master/doctor_tux | bash
 
 ## Supported Operating Systems
-Ubuntu 18.04.1 LTS
++ CentOS 7.6.1810
++ Ubuntu 18.04.1 LTS
