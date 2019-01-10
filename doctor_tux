@@ -17,12 +17,12 @@ fi
 if cat /etc/*-release | grep -i Ubuntu > /dev/null 2>&1
 then
 	os='Ubuntu'
-	apt install -y bc sysstat dnsutils > /dev/null 2>&1
+	apt install -y bc sysstat dnsutils lshw > /dev/null 2>&1
 fi
 if cat /etc/*-release | grep -i CentOS > /dev/null 2>&1
 then
         os='CentOS'
-	yum install -y bc sysstat bind-utils > /dev/null 2>&1
+	yum install -y bc sysstat bind-utils lshw > /dev/null 2>&1
 fi
 echo $(tput setaf 7)"##################################################################"$(tput sgr 0)
 echo $(tput setaf 2)"::Starting Doctor TUX::"$(tput sgr 0)
